@@ -1,14 +1,14 @@
 [
     {
-        "name": "Vue.js",
-        "url": "https://vuejs.org",
-        "avatar": "https://vuejs.org/images/logo.png",
-        "desc": "The Progressive JavaScript Framework"
+        "name": "友链",
+        "url": "https://www.ericzhao3366.work",
+        "avatar": "https://q1.qlogo.cn/g?b=qq&nk=3177261635&s=640",
+        "desc": "友情链接"
     },
     {
-        "name": "Vite",
-        "url": "https://vitejs.dev",
-        "avatar": "https://vitejs.dev/logo.svg",
-        "desc": "Next Generation Frontend Tooling"
+        "name": "友链",
+        "url": "https://www.ericzhao3366.work",
+        "avatar": "https://q1.qlogo.cn/g?b=qq&nk=3177261635&s=640",
+        "desc": "友情链接"
     }
 ]

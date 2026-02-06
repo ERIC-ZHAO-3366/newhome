@@ -3,6 +3,7 @@
 :root {
   --bg-color: #f2f2f7;
   --card-bg: rgba(255, 255, 255, 0.75);
+  --card-border: rgba(255, 255, 255, 0.6);
   --text-color: #1d1d1f;
   --text-secondary: #86868b;
   --radius: 32px;
@@ -15,11 +16,12 @@
 
 :root.dark {
   --bg-color: #0d1117;
-  --card-bg: rgba(30, 30, 30, 0.70);
+  --card-bg: rgba(30, 30, 30, 0.45);
   --text-color: #f0f6fc;
   --text-secondary: #8b949e;
   --shadow-light: 0 8px 32px rgba(0, 0, 0, 0.2);
   --shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.4);
+  --card-border: rgba(255, 255, 255, 0.08);
 }
 
 body {
@@ -37,7 +39,7 @@ body {
   min-height: 100vh;
   display: flex;
   justify-content: center;
-  align-items: center;
+  align-items: flex-start;
   padding: 60px 20px;
   box-sizing: border-box;
 }
@@ -46,7 +48,7 @@ body {
   background: var(--card-bg);
   backdrop-filter: blur(var(--blur));
   -webkit-backdrop-filter: blur(var(--blur));
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--card-border);
   box-shadow: var(--shadow-light);
   border-radius: var(--radius);
 }
