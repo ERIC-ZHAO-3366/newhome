@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/:path*",
+      "destination": "https://musicapi.shinji.ren/:path*"
+    }
+  ]
+}

@@ -1,6 +1,6 @@
 [
   { "id": "profile", "type": "ProfileCard", "size": "2x2" },
-  { "id": "music", "type": "MusicCard", "size": "2x1", "props": { "playlistUrl": "https://music.163.com/playlist?id=17637929965", "apiBase": "https://musicapi.shinji.ren" } },
+  { "id": "music", "type": "MusicCard", "size": "2x1", "props": { "playlistUrl": "https://music.163.com/playlist?id=17637929965", "apiBase": "/api" } },
   { "id": "motto", "type": "MottoCard", "size": "2x1" },
   { "id": "friends", "type": "FriendsCard", "size": "1x1" },
   { "id": "blog", "type": "LinkBlock", "size": "1x1", "props": { "title": "Blog", "url": "https://blog.ericzhao3366.work/", "icon": "fa-solid fa-pen-nib", "color": "#FF9F0A" } },
