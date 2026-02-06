@@ -3,7 +3,7 @@
   { "id": "music", "type": "MusicCard", "size": "2x1", "props": { "playlistUrl": "https://music.163.com/playlist?id=17637929965", "apiBase": "https://musicapi.shinji.ren" } },
   { "id": "motto", "type": "MottoCard", "size": "2x1" },
   { "id": "friends", "type": "FriendsCard", "size": "1x1" },
-  { "id": "blog", "type": "LinkBlock", "size": "1x1", "props": { "title": "Blog", "url": "#", "icon": "fa-solid fa-pen-nib", "color": "#FF9F0A" } },
-  { "id": "twitter", "type": "LinkBlock", "size": "1x1", "props": { "title": "Twitter", "url": "#", "icon": "fa-brands fa-twitter", "color": "#1DA1F2" } },
-  { "id": "project", "type": "LinkBlock", "size": "1x1", "props": { "title": "Project", "url": "#", "icon": "fa-solid fa-code-branch", "color": "#0A84FF" } }
+  { "id": "blog", "type": "LinkBlock", "size": "1x1", "props": { "title": "Blog", "url": "https://blog.ericzhao3366.work/", "icon": "fa-solid fa-pen-nib", "color": "#FF9F0A" } },
+  { "id": "twitter", "type": "LinkBlock", "size": "1x1", "props": { "title": "Twitter", "url": "https://x.com/EricZhao3366", "icon": "fa-brands fa-twitter", "color": "#1DA1F2" } },
+  { "id": "project", "type": "LinkBlock", "size": "1x1", "props": { "title": "Project", "url": "https://project.ericzhao3366.work/", "icon": "fa-solid fa-code-branch", "color": "#0A84FF" } }
 ]

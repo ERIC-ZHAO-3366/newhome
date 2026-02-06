@@ -15,9 +15,4 @@
     "noUncheckedSideEffectImports": true
   },
   "include": ["src/**/*.ts", "src/**/*.tsx", "src/**/*.vue"]
-  ,"exclude": [
-    "src/components/HelloWorld.vue",
-    "src/components/Widgets/GithubCard.vue",
-    "src/components/Widgets/ProjectCard.vue"
-  ]
 }
