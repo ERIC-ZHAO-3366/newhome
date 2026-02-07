@@ -41,6 +41,7 @@ const volumeRef = ref(null)
 
 // 歌词相关
 const lyrics = ref<LyricLine[]>([])
+const transLyrics = ref<LyricLine[]>([])
 const currentLyricIndex = ref(0)
 const noLyric = ref(false)
 const lyricScrollRef = ref<HTMLElement | null>(null)
@@ -116,8 +117,24 @@ const parseLyric = (lrcString: string) => {
   return parsed
 }
 
+// Find translated lyric by time (nearest within threshold)
+const findTransByTime = (time: number, threshold = 0.5) => {
+  if (!transLyrics.value || !transLyrics.value.length) return null
+  let best: LyricLine | null = null
+  let bestDiff = Infinity
+  for (const t of transLyrics.value) {
+    const diff = Math.abs(t.time - time)
+    if (diff < bestDiff) {
+      bestDiff = diff
+      best = t
+    }
+  }
+  return bestDiff <= threshold ? best : null
+}
+
 const fetchLyric = async (id: number) => {
   lyrics.value = []
+  transLyrics.value = []
   currentLyricIndex.value = 0
   noLyric.value = false
   
@@ -126,6 +143,12 @@ const fetchLyric = async (id: number) => {
     const data = await res.json()
     if (data.lrc && data.lrc.lyric) {
       lyrics.value = parseLyric(data.lrc.lyric)
+      // parse translated lyrics if available (tlyric)
+      if (data.tlyric && data.tlyric.lyric) {
+        transLyrics.value = parseLyric(data.tlyric.lyric)
+      } else {
+        transLyrics.value = []
+      }
     } else {
       noLyric.value = true
     }
@@ -299,11 +322,15 @@ const onAudioError = (e: Event) => {
 const playNext = async () => {
   if (!tracks.value.length) return
   currentIndex.value = (currentIndex.value + 1) % tracks.value.length
+  // Ensure autoplay continues when switching
+  isPlaying.value = true
 }
 
 const playPrev = async () => {
   if (!tracks.value.length) return
   currentIndex.value = (currentIndex.value - 1 + tracks.value.length) % tracks.value.length
+  // Ensure autoplay continues when switching
+  isPlaying.value = true
 }
 
 const togglePlaylist = () => {
@@ -333,7 +360,12 @@ watch(currentTime, (time) => {
       // Update store for global display
       const line = lyrics.value[index]
       if (line) {
-        musicStore.setLyric(line.text)
+        const tline = findTransByTime(line.time)
+        if (tline && /[\u4e00-\u9fff]/.test(tline.text)) {
+          musicStore.setLyric(`${line.text}\n${tline.text}`)
+        } else {
+          musicStore.setLyric(line.text)
+        }
       }
 
       // Scroll the lyrics container to keep the active line visible (reads lyricScrollRef)
@@ -490,6 +522,10 @@ onMounted(() => {
     justify-content: center;
     overflow: hidden;
     position: relative;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
 }
 
 .bg-decoration {
@@ -498,6 +534,8 @@ onMounted(() => {
     width: 200%; height: 200%;
     background: radial-gradient(circle, rgba(29, 185, 84, 0.1) 0%, rgba(255,255,255,0) 70%);
     pointer-events: none;
+  background-repeat: no-repeat;
+  transform: translateZ(0);
 }
 
 .player-container {
@@ -519,6 +557,9 @@ onMounted(() => {
   gap: 14px;
   position: relative; 
   overflow: hidden; /* Important for overlay containment */
+  background-clip: padding-box;
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
 }
 
 .player-header {

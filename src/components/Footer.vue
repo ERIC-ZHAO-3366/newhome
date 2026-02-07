@@ -7,6 +7,9 @@ const musicStore = useMusicStore()
 
 // Show lyric if it exists (persist even when paused to prevent layout jump)
 const showLyric = computed(() => !!musicStore.currentLyric)
+const lyricHtml = computed(() => {
+  return musicStore.currentLyric ? musicStore.currentLyric.replace(/\n/g, '<br/>') : ''
+})
 </script>
 
 <template>
@@ -14,8 +17,8 @@ const showLyric = computed(() => !!musicStore.currentLyric)
     <!-- Lyric Display with fixed width to prevent jitter -->
      <transition name="fade">
         <div v-if="showLyric" class="lyric-bar glass">
-            <span class="music-icon">🎵</span>
-            <span class="lyric-text">{{ musicStore.currentLyric }}</span>
+          <span class="music-icon">🎵</span>
+          <span class="lyric-text" v-html="lyricHtml"></span>
         </div>
     </transition>
 
@@ -67,10 +70,15 @@ const showLyric = computed(() => !!musicStore.currentLyric)
 }
 
 .lyric-text {
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    font-weight: 500;
+  display: block;
+  white-space: pre-wrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  font-weight: 500;
+  word-break: break-word;
+  max-height: calc(2 * 1.2em);
+  line-height: 1.2em;
+  text-align: center;
 }
 
 .copyright { margin: 0; }

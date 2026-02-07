@@ -6,7 +6,6 @@ const components: Record<string, any> = {
   ProfileCard: defineAsyncComponent(() => import('../components/Widgets/ProfileCard.vue')),
   MusicCard: defineAsyncComponent(() => import('../components/Widgets/MusicCard.vue')),
   LinkBlock: defineAsyncComponent(() => import('../components/Widgets/LinkBlock.vue')),
-  TimeCard: defineAsyncComponent(() => import('../components/Widgets/TimeCard.vue')),
   MottoCard: defineAsyncComponent(() => import('../components/Widgets/MottoCard.vue')),
   FriendsCard: defineAsyncComponent(() => import('../components/Widgets/FriendsCard.vue'))
 }
@@ -74,7 +73,7 @@ const handleMouseMove = (e: MouseEvent) => {
         v-for="item in gridConfig"
         :key="item.id"
         :is="components[item.type]"
-        :class="['grid-item', `size-${item.size}`, 'glass']"
+        :class="['grid-item', `size-${item.size}`, 'glass', `id-${item.id}`]"
         v-bind="item.props || {}"
       />
     </transition-group>
@@ -122,13 +121,23 @@ const handleMouseMove = (e: MouseEvent) => {
   overflow: hidden;
   position: relative;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
+  transform: translateZ(0);
+  -webkit-backface-visibility: hidden;
+  backface-visibility: hidden;
+  will-change: transform;
   
   // Spotlight effect
   &::before {
     content: "";
     position: absolute;
     top: 0; left: 0; right: 0; bottom: 0;
+    /* Use GPU compositing and avoid repeated background artifacts */
     background: radial-gradient(800px circle at var(--mouse-x) var(--mouse-y), rgba(255, 255, 255, 0.06), transparent 40%);
+    background-repeat: no-repeat;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    will-change: opacity, background-position, transform;
     opacity: 0;
     transition: opacity 0.5s ease;
     pointer-events: none;

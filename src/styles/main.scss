@@ -53,6 +53,11 @@ body {
   border-radius: var(--radius);
 }
 
+/* Remove bottom hairline on profile card in dark mode (profile uses id-profile on host) */
+:root.dark .id-profile {
+  border-bottom: none;
+}
+
 // Utility
 .w-full { width: 100%; }
 .h-full { height: 100%; }

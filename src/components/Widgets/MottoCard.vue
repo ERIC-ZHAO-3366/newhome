@@ -80,6 +80,11 @@ onMounted(() => {
     gap: 0.25rem;
     height: 100%;
     width: 100%;
+    transform: translateZ(0);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
+    background-clip: padding-box;
+    outline: 1px solid transparent;
 }
 
 .time-section {
@@ -134,13 +139,18 @@ onMounted(() => {
 }
 
 .handwritten-text {
-  font-family: 'Long Cang', 'Dancing Script', cursive;
-  font-size: 2.2rem;
-  line-height: 1.2;
-  text-align: center;
-  color: var(--text-color);
-  text-shadow: 0 4px 8px rgba(0,0,0,0.12);
-  white-space: nowrap;
+    font-family: 'Long Cang', 'Dancing Script', cursive;
+    font-size: 2.2rem;
+    line-height: 1.2;
+    text-align: center;
+    color: var(--text-color);
+    text-shadow: 0 4px 8px rgba(0,0,0,0.12);
+    white-space: normal;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
 }
 
 @media (max-width: 768px) {
