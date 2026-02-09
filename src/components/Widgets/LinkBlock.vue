@@ -33,7 +33,7 @@ const bgImage = ref(getRandomBg())
   </a>
 </template>
 <style scoped>
-@import url('https://fonts.googleapis.com/css2?family=Long+Cang&family=Dancing+Script:wght@700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Long+Cang&family=Dancing+Script:wght@700&display=swap'); moved to index.html */
 
 /* Card Container - Matching SocialCard */
 .card-container {

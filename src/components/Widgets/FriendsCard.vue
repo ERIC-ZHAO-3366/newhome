@@ -105,7 +105,7 @@ const bgImage = ref(getRandomBg())
 </template>
 
 <style scoped lang="scss">
-@import url('https://fonts.googleapis.com/css2?family=Long+Cang&family=Dancing+Script:wght@700&display=swap');
+/* @import url('https://fonts.googleapis.com/css2?family=Long+Cang&family=Dancing+Script:wght@700&display=swap'); moved to index.html */
 
 .friends-card {
     text-decoration: none; 
