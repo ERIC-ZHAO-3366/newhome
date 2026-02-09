@@ -15,14 +15,14 @@ const bgImage = ref(getRandomBg())
 </script>
 <template>
   <a :href="url || '#'" target="_blank" 
-     class="h-full w-full flex flex-col p-4 link-block relative overflow-hidden" 
+     class="card-container link-block" 
      :style="{ '--bg-image': `url(${bgImage})` }">
     
     <!-- Background Image Layer -->
     <div class="bg-layer"></div>
     <div class="bg-overlay"></div>
 
-    <div class="content z-10 w-full h-full flex flex-col justify-start items-start">
+    <div class="content">
         <div class="title-text">{{ title || 'Link' }}</div>
     </div>
     
@@ -35,16 +35,27 @@ const bgImage = ref(getRandomBg())
 <style scoped>
 @import url('https://fonts.googleapis.com/css2?family=Long+Cang&family=Dancing+Script:wght@700&display=swap');
 
-.link-block { 
+/* Card Container - Matching SocialCard */
+.card-container {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  padding: 1rem;
+  position: relative;
+  overflow: hidden;
   text-decoration: none; 
   color: white; 
   transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
-  position: relative;
-  /* Ensure text is top left */
+  box-sizing: border-box;
+}
+
+.link-block { 
+  /* Inherited from common or defined here */
   align-items: flex-start;
   justify-content: flex-start;
 }
-.link-block:hover { 
+.card-container:hover { 
   transform: translateY(-2px);
 }
 
@@ -67,11 +78,23 @@ const bgImage = ref(getRandomBg())
   z-index: 1;
   transition: background 0.3s;
 }
-.link-block:hover .bg-layer {
+.card-container:hover .bg-layer {
   transform: scale(1.1);
 }
-.link-block:hover .bg-overlay {
+.card-container:hover .bg-overlay {
   background: rgba(0,0,0,0.1); /* Lighten on hover */
+}
+
+/* Content - Matching SocialCard */
+.content {
+    z-index: 10;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    align-items: flex-start;
 }
 
 /* Icon */
@@ -87,14 +110,12 @@ const bgImage = ref(getRandomBg())
   z-index: 2;
   pointer-events: none;
 }
-.link-block:hover .bg-icon {
+.card-container:hover .bg-icon {
   opacity: 0.5;
   transform: rotate(0deg) scale(1.2);
   right: 10px;
   bottom: -10px;
 }
-
-.z-10 { z-index: 10; position: relative; }
 
 .title-text {
   font-family: 'Dancing Script', cursive;
@@ -103,5 +124,6 @@ const bgImage = ref(getRandomBg())
   text-align: left;
   line-height: 1.1;
   text-shadow: 0 2px 10px rgba(0,0,0,0.3);
+  z-index: 10;
 }
 </style>

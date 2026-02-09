@@ -5,8 +5,8 @@ import { computed } from 'vue'
 const currentYear = new Date().getFullYear()
 const musicStore = useMusicStore()
 
-// Show lyric if it exists (persist even when paused to prevent layout jump)
-const showLyric = computed(() => !!musicStore.currentLyric)
+// Show lyric if it exists AND is playing
+const showLyric = computed(() => !!musicStore.currentLyric && musicStore.isPlaying)
 const lyricHtml = computed(() => {
   return musicStore.currentLyric ? musicStore.currentLyric.replace(/\n/g, '<br/>') : ''
 })
@@ -14,9 +14,9 @@ const lyricHtml = computed(() => {
 
 <template>
   <footer class="footer">
-    <!-- Lyric Display with fixed width to prevent jitter -->
+    <!-- Lyric Display (Fixed at bottom) -->
      <transition name="fade">
-        <div v-if="showLyric" class="lyric-bar glass">
+        <div v-if="showLyric" class="lyric-bar">
           <span class="music-icon">🎵</span>
           <span class="lyric-text" v-html="lyricHtml"></span>
         </div>
@@ -49,6 +49,13 @@ const lyricHtml = computed(() => {
 }
 
 .lyric-bar {
+    /* Fixed Positioning */
+    position: fixed;
+    bottom: 80px; /* Above the footer area usually, or just float at bottom */
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 999;
+    
     /* Fixed width constraint to prevent jumping when song/lyric changes */
     width: min(400px, 90vw);
     padding: 8px 16px;
@@ -59,8 +66,25 @@ const lyricHtml = computed(() => {
     align-items: center;
     justify-content: center;
     gap: 8px;
-    margin-bottom: 4px;
-    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+    
+    /* Transparent Frosted Glass Effect */
+    background: rgba(255, 255, 255, 0.1); 
+    backdrop-filter: blur(12px);
+    -webkit-backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+}
+
+/* Dark mode override */
+:global(.dark) .lyric-bar {
+    background: rgba(0, 0, 0, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+@media (max-width: 600px) {
+    .lyric-bar {
+        bottom: 40px; /* Closer to bottom on mobile */
+    }
 }
 
 .music-icon {

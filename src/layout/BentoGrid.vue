@@ -7,7 +7,8 @@ const components: Record<string, any> = {
   MusicCard: defineAsyncComponent(() => import('../components/Widgets/MusicCard.vue')),
   LinkBlock: defineAsyncComponent(() => import('../components/Widgets/LinkBlock.vue')),
   MottoCard: defineAsyncComponent(() => import('../components/Widgets/MottoCard.vue')),
-  FriendsCard: defineAsyncComponent(() => import('../components/Widgets/FriendsCard.vue'))
+  FriendsCard: defineAsyncComponent(() => import('../components/Widgets/FriendsCard.vue')),
+  SocialCard: defineAsyncComponent(() => import('../components/Widgets/SocialCard.vue'))
 }
 
 // Inject Env Variables

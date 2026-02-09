@@ -39,24 +39,37 @@ const refreshBg = () => {
 provide('bgRefreshSignal', refreshKey)
 
 onMounted(() => {
-    // Wait for window load + a minimum time to avoid flicker
-    const minTime = new Promise(resolve => setTimeout(resolve, 800))
-    const windowLoad = new Promise(resolve => {
-        if (document.readyState === 'complete') resolve(true)
-        else window.addEventListener('load', () => resolve(true))
-    })
-    
-    // Preload BG
-    const bgLoad = new Promise(resolve => {
-        const img = new Image()
-        img.src = bgUrl.value
-        img.onload = resolve
-        img.onerror = resolve
-    })
+  // Adaptive loading: if resources load quickly, show a very short loader.
+  const start = performance.now()
+  const QUICK_THRESHOLD = 500 // ms — consider load "fast" if under this
+  const MIN_NORMAL = 300 // ms minimal visible time for normal loads
+  const MIN_FAST = 60 // ms minimal visible time for very fast loads
 
-    Promise.all([minTime, windowLoad, bgLoad]).then(() => {
-        isLoading.value = false
-    })
+  const windowLoad = new Promise(resolve => {
+    if (document.readyState === 'complete') resolve(true)
+    else window.addEventListener('load', () => resolve(true))
+  })
+
+  // Preload BG with timeout; record when it finishes
+  const bgLoad = new Promise(resolve => {
+    const img = new Image()
+    img.src = bgUrl.value
+    const markAndResolve = () => resolve(performance.now())
+    img.onload = markAndResolve
+    img.onerror = markAndResolve
+    // Safety timeout
+    setTimeout(() => resolve(performance.now()), 3000)
+  })
+
+  // Wait for essential resources, then decide how long to keep the loader
+  Promise.all([windowLoad, bgLoad]).then(() => {
+    const elapsed = performance.now() - start
+    const minTime = elapsed < QUICK_THRESHOLD ? MIN_FAST : MIN_NORMAL
+    const remaining = Math.max(0, minTime - elapsed)
+    setTimeout(() => {
+      isLoading.value = false
+    }, remaining)
+  })
 
     // Security Restictions
     document.addEventListener('contextmenu', (e) => e.preventDefault())

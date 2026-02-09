@@ -1,6 +1,6 @@
 <script setup lang="ts">
-import { ref, computed, onMounted } from 'vue'
-import { useNow, useTimeoutFn, useDateFormat } from '@vueuse/core'
+import { ref, computed, onMounted, onUnmounted } from 'vue'
+import { useNow, useDateFormat } from '@vueuse/core'
 
 const props = defineProps<{
   text?: string
@@ -11,7 +11,7 @@ const formattedTime = useDateFormat(now, 'HH:mm')
 const formattedSeconds = useDateFormat(now, 'ss')
 
 const isFlipping = ref(false)
-const showGreeting = ref(true)
+const showMotto = ref(false)
 
 // Permanent motto text
 const mottoText = computed(() => props.text || 'Carpe Diem')
@@ -28,26 +28,31 @@ const timeGreeting = computed(() => {
 })
 
 // Current text to display
-const currentText = ref('')
+const currentText = computed(() => showMotto.value ? mottoText.value : timeGreeting.value)
 
-// Initialize with greeting
-currentText.value = timeGreeting.value
+let intervalId: number
 
-// Switch to motto after 5 seconds with flip animation
 onMounted(() => {
-  useTimeoutFn(() => {
+  // Set interval to toggle every 5 seconds
+  intervalId = window.setInterval(() => {
      // Start Flip Out
      isFlipping.value = true
      
-     // Change text halfway through (300ms)
+     // Change content halfway through animation (300ms)
      setTimeout(() => {
-        showGreeting.value = false
-        currentText.value = mottoText.value
-        // Start Flip In (Remove flipping class)
-        isFlipping.value = false
-     }, 300)
+        showMotto.value = !showMotto.value
+        
+        // Wait a bit then remove flipped class to animate back in
+        setTimeout(() => {
+            isFlipping.value = false
+        }, 50)
+     }, 300) 
      
   }, 5000)
+})
+
+onUnmounted(() => {
+    if (intervalId) clearInterval(intervalId)
 })
 </script>
 
@@ -77,7 +82,8 @@ onMounted(() => {
     flex-direction: column;
     align-items: center;
     justify-content: center;
-    gap: 0.25rem;
+    /* Reduced gap */
+    gap: 0; 
     height: 100%;
     width: 100%;
     transform: translateZ(0);
@@ -93,6 +99,9 @@ onMounted(() => {
     display: flex;
     align-items: baseline;
     justify-content: center;
+    user-select: none;
+    /* Negative margin to pull text closer if line-height is large */
+    margin-bottom: -0.5rem; 
     
     .time-main {
         font-size: 3.5rem;
@@ -110,61 +119,38 @@ onMounted(() => {
 }
 
 .motto-section {
+    /* Prevent excessive growing */
     flex-grow: 0;
-    width: 100%;
     display: flex;
     align-items: center;
     justify-content: center;
-    min-height: 40px;
+    width: 100%;
+    position: relative;
+    /* Removed max-height constraint to let it sit naturally */
+    margin-top: 0.5rem; 
 }
 
 .perspective-container {
     perspective: 1000px;
-    width: 100%;
 }
 
 .flip-wrapper {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1);
+    transition: transform 0.6s cubic-bezier(0.4, 0.0, 0.2, 1), opacity 0.3s;
     transform-style: preserve-3d;
-}
-
-.flipped {
-    transform: rotateX(90deg);
-    opacity: 0.5;
+    opacity: 1;
+    
+    &.flipped {
+        transform: rotateX(90deg);
+        opacity: 0;
+    }
 }
 
 .handwritten-text {
-    font-family: 'Long Cang', 'Dancing Script', cursive;
-    font-size: 2.2rem;
-    line-height: 1.2;
+    font-family: 'Long Cang', cursive;
+    font-size: 2rem;
     text-align: center;
-    color: var(--text-color);
-    text-shadow: 0 4px 8px rgba(0,0,0,0.12);
-    white-space: normal;
-    display: -webkit-box;
-    -webkit-line-clamp: 2;
-    -webkit-box-orient: vertical;
-    overflow: hidden;
-    word-break: break-word;
-}
-
-@media (max-width: 768px) {
-    /* Styles are already column and centered by default now, so this media query might be redundant or just confirming behavior */
-    .motto-card-wrapper {
-        gap: 0.5rem;
-    }
-    
-    .time-main {
-        font-size: 2.8rem;
-    }
-
-    .handwritten-text {
-        font-size: 2rem;
-    }
+    line-height: 1.2;
+    opacity: 0.9;
+    white-space: nowrap;
 }
 </style>

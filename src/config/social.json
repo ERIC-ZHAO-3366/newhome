@@ -1,0 +1,30 @@
+[
+  {
+    "id": "twitter",
+    "title": "Twitter",
+    "url": "https://x.com/EricZhao3366",
+    "icon": "fa-brands fa-twitter",
+    "color": "#1DA1F2"
+  },
+  {
+    "id": "github",
+    "title": "GitHub",
+    "url": "https://github.com/EricZhao3366",
+    "icon": "fa-brands fa-github",
+    "color": "#333"
+  },
+  {
+    "id": "bilibili",
+    "title": "Bilibili",
+    "url": "https://space.bilibili.com/485275168",
+    "icon": "fa-brands fa-bilibili",
+    "color": "#FB7299"
+  },
+  {
+    "id": "email",
+    "title": "Email",
+    "url": "mailto:ericzhao3366@dingtalk.com",
+    "icon": "fa-solid fa-envelope",
+    "color": "#EA4335"
+  }
+]
