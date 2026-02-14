@@ -2,5 +2,13 @@
   "name": "EricZhao",
   "bio": "Cherish passion, chase the world / 情熱を持ち、山海へ。",
   "tags": ["Student", "Dreamer"],
-  "avatar": "https://q1.qlogo.cn/g?b=qq&nk=3177261635&s=640"
+  "avatar": "https://q1.qlogo.cn/g?b=qq&nk=3177261635&s=640",
+  "beian": {
+    "text": "浙ICP备2026008960号-2",
+    "url": "https://beian.miit.gov.cn/"
+  },
+  "gongan": {
+    "text": "公安网备申请中",
+    "url": "http://www.beian.gov.cn/"
+  }
 }

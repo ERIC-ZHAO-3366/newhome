@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useMusicStore } from '../stores/music'
-import { computed } from 'vue'
+import { computed, ref, nextTick, onMounted, onBeforeUnmount } from 'vue'
+import profile from '../config/profile.json'
 
 const currentYear = new Date().getFullYear()
 const musicStore = useMusicStore()
@@ -9,6 +10,62 @@ const musicStore = useMusicStore()
 const showLyric = computed(() => !!musicStore.currentLyric && musicStore.isPlaying)
 const lyricHtml = computed(() => {
   return musicStore.currentLyric ? musicStore.currentLyric.replace(/\n/g, '<br/>') : ''
+})
+
+// Auto-fit logic: try to keep footer items on one line by reducing font-size when needed
+const containerRef = ref<HTMLElement | null>(null)
+let originalFontPx = 0
+const minFontPx = 12 // minimum font size in px
+
+function adjustFontToFit() {
+  nextTick(() => {
+    const el = containerRef.value
+    if (!el) return
+
+    // restore original font-size if we know it
+    if (!originalFontPx) {
+      originalFontPx = parseFloat(window.getComputedStyle(el).fontSize || '12')
+    }
+    el.style.whiteSpace = 'nowrap'
+    el.style.flexDirection = 'row'
+    el.style.flexWrap = 'nowrap'
+    el.style.justifyContent = 'center'
+
+    let fontPx = originalFontPx
+    el.style.fontSize = fontPx + 'px'
+
+    // Calculate available width with a safety margin (e.g. parent width or viewport width minus padding)
+    const availableWidth = Math.min(el.parentElement?.clientWidth || window.innerWidth, window.innerWidth) - 32;
+
+    // Check if scrollWidth (content width) exceeds available width or clientWidth
+    if (el.scrollWidth > availableWidth || el.scrollWidth > el.clientWidth) {
+      el.style.whiteSpace = 'normal'
+      el.style.flexDirection = 'column'
+      // Restore original font size when wrapped, or keep it slightly smaller if desired, 
+      // but usually wrapping means we have enough width for the content blocks.
+      el.style.fontSize = originalFontPx + 'px'
+      el.style.gap = '4px' // Reduce gap when stacked
+    } else {
+        // It fits!
+        el.style.gap = '28px' // Restore original gap
+    }
+  })
+}
+
+let resizeTimer: number | undefined
+function onResize() {
+  if (resizeTimer) window.clearTimeout(resizeTimer)
+  resizeTimer = window.setTimeout(() => adjustFontToFit(), 120)
+}
+
+onMounted(() => {
+  adjustFontToFit()
+  window.addEventListener('resize', onResize)
+})
+
+onBeforeUnmount(() => {
+  window.removeEventListener('resize', onResize)
+  if (resizeTimer) window.clearTimeout(resizeTimer)
 })
 </script>
 
@@ -22,8 +79,14 @@ const lyricHtml = computed(() => {
         </div>
     </transition>
 
-    <div class="footer-content glass">
+    <div class="footer-content glass" ref="containerRef">
       <p class="copyright">© {{ currentYear }} EricZhao. All Rights Reserved.</p>
+
+      <div class="links">
+        <a v-if="profile.beian" :href="profile.beian.url" target="_blank" rel="noopener noreferrer">{{ profile.beian.text }}</a>
+        <span class="sep" v-if="profile.beian && profile.gongan">·</span>
+        <a v-if="profile.gongan" :href="profile.gongan.url" target="_blank" rel="noopener noreferrer">{{ profile.gongan.text }}</a>
+      </div>
     </div>
   </footer>
 </template>
@@ -42,10 +105,16 @@ const lyricHtml = computed(() => {
   padding: 10px 24px;
   border-radius: 50px; /* Pill shape */
   display: flex;
-  gap: 20px;
+  flex-direction: row; /* default try to keep on one line */
+  gap: 28px;
   align-items: center;
+  justify-content: center;
   font-size: 0.8rem;
   color: var(--text-secondary);
+  white-space: nowrap; /* prefer single line */
+  flex-wrap: nowrap;
+  max-width: 95vw; /* Ensure it is constrained */
+  box-sizing: border-box;
 }
 
 .lyric-bar {
@@ -107,13 +176,28 @@ const lyricHtml = computed(() => {
 
 .copyright { margin: 0; }
 
+.beian { margin: 0; font-size: 0.8rem; color: var(--text-secondary); }
+
 .links a {
   color: inherit;
   text-decoration: none;
-  font-weight: 600;
+  font-weight: inherit;
+  font-size: inherit;
 }
+.links { display: flex; align-items: center; justify-content: center; gap: 8px; font-size: inherit; flex-wrap: wrap; }
 .links a:hover { color: var(--text-color); }
-.sep { opacity: 0.5; }
+.sep { opacity: 0.5; margin: 0 8px; }
+
+/* Responsive: when viewport is narrow, reduce footer font-size to avoid overflow */
+@media (max-width: 480px) {
+  .footer-content { font-size: 0.72rem; padding: 8px 16px; }
+  .links { gap: 6px; }
+}
+
+@media (max-width: 360px) {
+  .footer-content { font-size: 0.66rem; }
+  .sep { margin: 0 6px; }
+}
 
 @keyframes bounce {
     0%, 100% { transform: translateY(0); }
