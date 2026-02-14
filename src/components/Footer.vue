@@ -15,7 +15,6 @@ const lyricHtml = computed(() => {
 // Auto-fit logic: try to keep footer items on one line by reducing font-size when needed
 const containerRef = ref<HTMLElement | null>(null)
 let originalFontPx = 0
-const minFontPx = 12 // minimum font size in px
 
 function adjustFontToFit() {
   nextTick(() => {
